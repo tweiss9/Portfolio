@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  const homeLink = document.getElementById("home-link")
+  const homeLink = document.getElementById("home-link");
   if (homeLink) {
     homeLink.addEventListener("click", (event) => {
       event.preventDefault();
@@ -148,7 +148,12 @@ function handleSubmit(event) {
     },
     body: JSON.stringify(formData),
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(() => {
       hideLoadingSpinner();
       console.log("Email sent successfully!");

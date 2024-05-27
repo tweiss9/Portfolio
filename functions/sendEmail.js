@@ -11,6 +11,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+transporter.verify().then(console.log).catch(console.error);
+
 const sendEmail = async (name, email, message) => {
   return new Promise((resolve, reject) => {
     try {
