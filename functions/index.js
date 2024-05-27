@@ -5,6 +5,7 @@ const axios = require("axios");
 const path = require("path");
 const functions = require("firebase-functions");
 const cors = require("cors");
+const helmet = require('helmet');
 const app = express();
 const { sendEmail } = require("./sendEmail.js");
 
@@ -27,6 +28,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "")));
+app.use(helmet());
 
 app.use((req, res, next) => {
   const userAgent = req.headers["user-agent"];
