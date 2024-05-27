@@ -153,7 +153,7 @@ async function handleSubmit(event) {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error status: ${response.status}`);
+        throw new Error('An error occurred. Please try again later.');
       }
       return response.json();
     })
