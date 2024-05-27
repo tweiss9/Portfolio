@@ -53,6 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         console.error("grecaptcha is not defined.");
       }
+    })
+    .catch(() => {
+      alert("An error occurred while loading the page. Please try again later.");
     });
 });
 
