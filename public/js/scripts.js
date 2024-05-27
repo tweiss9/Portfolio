@@ -1,4 +1,5 @@
 let recaptchaSiteKey;
+let recaptchaLoading = false;
 let recaptchaComplete = false;
 let isFormSubmitted = false;
 const prefix = "https://us-central1-tylerhweiss.cloudfunctions.net/api";
@@ -64,10 +65,7 @@ function scrollToSection(sectionId) {
 }
 
 function checkRecaptchaStatus() {
-  if (!isRecaptchaReady) {
-    console.log("reCAPTCHA is not yet ready.");
-    return;
-  }
+  recaptchaLoading = true;
   const recaptchaResponse = grecaptcha.getResponse();
 
   fetch(prefix + "/reCAPTCHA", {
@@ -78,9 +76,11 @@ function checkRecaptchaStatus() {
     body: JSON.stringify({ "g-recaptcha-response": recaptchaResponse }),
   })
     .then((response) => {
+      recaptchaLoading = false;
       return response.json();
     })
     .then((verificationResult) => {
+      recaptchaLoading = false;
       if (verificationResult.success) {
         recaptchaComplete = true;
       } else {
@@ -92,6 +92,7 @@ function checkRecaptchaStatus() {
     })
     .catch((error) => {
       recaptchaComplete = false;
+      recaptchaLoading = false;
       console.error("Error verifying reCAPTCHA:", error);
     });
 }
@@ -100,9 +101,11 @@ function onRecaptchaError() {
   console.error("Error during reCAPTCHA verification.", error);
 }
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
   event.preventDefault();
-
+  while (recaptchaLoading) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
   const nameInput = document.getElementById("name");
   const emailInput = document.getElementById("email");
   const messageInput = document.getElementById("message");
