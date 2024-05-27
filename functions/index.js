@@ -6,13 +6,13 @@ const path = require("path");
 const functions = require("firebase-functions");
 const cors = require("cors");
 const helmet = require("helmet");
+const csurf = require('csurf');
 const app = express();
 const { sendEmail } = require("./sendEmail.js");
 
 app.set("view engine", "ejs");
 
 const crypto = require("crypto");
-const nonce = crypto.randomBytes(16).toString("base64");
 
 app.use(
   cors({
@@ -29,6 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "")));
 app.use(helmet());
+app.use(csurf());
 
 app.use((req, res, next) => {
   const nonce = crypto.randomBytes(16).toString("base64");
@@ -42,6 +43,11 @@ app.use((req, res, next) => {
 
   res.locals.nonce = nonce;
 
+  next();
+});
+
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
   next();
 });
 
