@@ -5,7 +5,7 @@ const axios = require("axios");
 const path = require("path");
 const functions = require("firebase-functions");
 const cors = require("cors");
-const helmet = require('helmet');
+const helmet = require("helmet");
 const app = express();
 const { sendEmail } = require("./sendEmail.js");
 
@@ -31,24 +31,17 @@ app.use(express.static(path.join(__dirname, "")));
 app.use(helmet());
 
 app.use((req, res, next) => {
-  const userAgent = req.headers["user-agent"];
-  if (userAgent.includes("Chrome") || userAgent.includes("Firefox")) {
-    res.setHeader(
-      "Content-Security-Policy",
-      `default-src 'self'; script-src 'self' https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com 'nonce-${nonce}' 'unsafe-inline'; style-src 'self' https://maxcdn.bootstrapcdn.com 'unsafe-inline';`
-    );
-  } else if (userAgent.includes("Edge") || userAgent.includes("WebKit")) {
-    res.setHeader(
-      "Content-Security-Policy",
-      "default-src 'self'; script-src 'self' 'unsafe-inline'; " +
-        "style-src 'self' 'unsafe-inline';"
-    );
-  } else {
-    res.setHeader(
-      "Content-Security-Policy",
-      "default-src 'self'; script-src 'self'; style-src 'self';"
-    );
-  }
+  const nonce = crypto.randomBytes(16).toString("base64");
+
+  res.setHeader(
+    "Content-Security-Policy",
+    `default-src 'self'; ` +
+      `script-src 'self' https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com https://www.google-analytics.com https://www.google.com https://www.gstatic.com 'nonce-${nonce}'; ` +
+      `style-src 'self' https://maxcdn.bootstrapcdn.com 'nonce-${nonce}';`
+  );
+
+  res.locals.nonce = nonce;
+
   next();
 });
 
