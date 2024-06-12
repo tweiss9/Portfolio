@@ -14,6 +14,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@grpc/grpc-js": "^1.10.9",
     "axios": "^1.6.0",
     "cors": "^2.8.5",
     "csurf": "^1.11.0",
@@ -25,7 +26,7 @@
     "nodemailer": "^6.9.7"
   },
   "devDependencies": {
-    "eslint": "^8.53.0",
+    "eslint": "^9.4.0",
     "eslint-config-google": "^0.14.0",
     "firebase-functions-test": "^3.1.0"
   },

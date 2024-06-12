@@ -54,8 +54,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("grecaptcha is not defined.");
       }
     })
-    .catch(() => {
-      alert("An error occurred while loading the page. Please try again later.");
+    .catch((error) => {
+      console.error("Error fetching reCAPTCHA site key:", error);
     });
 });
 
