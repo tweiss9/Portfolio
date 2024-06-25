@@ -1,35 +1,27 @@
 {
-  "functions": [
-    {
-      "source": "functions",
-      "codebase": "default",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log"
-      ],
-      "rewrites": [
-        {
-          "source": "/reCAPTCHA",
-          "function": "api"
-        },
-        {
-          "source": "/send-email",
-          "function": "api"
-        }
-      ],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint"
-      ]
-    }
-  ],
+  "functions": {
+    "source": "functions",
+    "codebase": "default",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log"
+    ],
+    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run lint"]
+  },
   "hosting": {
     "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "/reCAPTCHA",
+        "function": "api"
+      },
+      {
+        "source": "/send-email",
+        "function": "api"
+      }
     ]
   }
 }
