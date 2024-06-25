@@ -1,10 +1,16 @@
 let recaptchaSiteKey;
 let recaptchaLoading = false;
 let recaptchaComplete = false;
-let isFormSubmitted = false;
 const prefix = "https://us-central1-tylerhweiss.cloudfunctions.net/api";
 
 document.addEventListener("DOMContentLoaded", function () {
+  setupNavigation();
+  setupHomeLink();
+  setupSubmitButton();
+  fetchSiteKey();
+});
+
+function setupNavigation() {
   const navigationLinks = document.querySelectorAll(".nav-link");
   navigationLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
@@ -13,7 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
       scrollToSection(sectionId);
     });
   });
+}
 
+function setupHomeLink() {
   const homeLink = document.getElementById("home-link");
   if (homeLink) {
     homeLink.addEventListener("click", (event) => {
@@ -23,48 +31,69 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     console.error("Could not find home-link element");
   }
+}
 
+function setupSubmitButton() {
   const submitButton = document.getElementById("submitButton");
-  submitButton.addEventListener("click", handleSubmit);
+  if (submitButton) {
+    submitButton.addEventListener("click", handleSubmit);
+  } else {
+    console.error("Could not find submitButton element");
+  }
+}
 
+function fetchSiteKey() {
   fetch(prefix + "/get-site-key")
-    .then((response) => {
-      if (!response.ok) {
-        console.log("Response Status:", response.status);
-        throw new Error("Failed to fetch reCAPTCHA site key");
-      }
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data) => {
-      const recaptchaSiteKey = data.recaptchaSiteKey;
-
-      const recaptchaDiv = document.getElementById("recaptchaDiv");
-      recaptchaDiv.setAttribute("data-sitekey", recaptchaSiteKey);
-
-      if (window.grecaptcha) {
-        grecaptcha.ready(function () {
-          isRecaptchaReady = true;
-          grecaptcha.render("recaptchaDiv", {
-            sitekey: recaptchaSiteKey,
-            callback: checkRecaptchaStatus,
-            "error-callback": onRecaptchaError,
-          });
-        });
-      } else {
-        console.error("grecaptcha is not defined.");
-      }
+      recaptchaSiteKey = data.recaptchaSiteKey;
+      setupRecaptcha();
     })
     .catch((error) => {
       console.error("Error fetching reCAPTCHA site key:", error);
     });
-});
+}
 
-function scrollToSection(sectionId) {
-  const targetSection = document.querySelector(sectionId);
-  const navbarHeight = document.querySelector(".navbar").offsetHeight;
-  const targetPosition =
-    targetSection.getBoundingClientRect().top + window.scrollY - navbarHeight;
-  window.scrollTo({ top: targetPosition, behavior: "smooth" });
+function setupRecaptcha() {
+  const recaptchaDiv = document.getElementById("recaptchaDiv");
+  if (recaptchaDiv) {
+    recaptchaDiv.setAttribute("data-sitekey", recaptchaSiteKey);
+
+    if (window.grecaptcha) {
+      grecaptcha.ready(function () {
+        grecaptcha.render("recaptchaDiv", {
+          sitekey: recaptchaSiteKey,
+          callback: checkRecaptchaStatus,
+          "error-callback": function (error) {
+            console.error("Error during reCAPTCHA verification.", error);
+          },
+        });
+      });
+    } else {
+      console.error("grecaptcha is not defined.");
+    }
+  } else {
+    console.error("Could not find recaptchaDiv element");
+  }
+}
+
+async function fetchCsrfToken() {
+  try {
+    const response = await fetch(prefix + "/get-csrf-token", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    const csrfToken = data.csrfToken;
+    document.cookie = `XSRF-TOKEN=${csrfToken}; Path=/; Secure; SameSite=None`;
+
+    return csrfToken;
+  } catch (error) {
+    console.error("Error fetching CSRF token:", error);
+    return null;
+  }
 }
 
 function checkRecaptchaStatus() {
@@ -76,20 +105,18 @@ function checkRecaptchaStatus() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ "g-recaptcha-response": recaptchaResponse }),
+    body: JSON.stringify({
+      "g-recaptcha-response": recaptchaResponse,
+    }),
   })
-    .then((response) => {
-      recaptchaLoading = false;
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((verificationResult) => {
       recaptchaLoading = false;
-      if (verificationResult.success) {
-        recaptchaComplete = true;
-      } else {
-        recaptchaComplete = false;
+      recaptchaComplete = verificationResult.success;
+      if (!recaptchaComplete) {
         console.error(
-          "reCAPTCHA verification failed." + verificationResult.error
+          "reCAPTCHA verification failed:",
+          verificationResult.error || "Unknown error"
         );
       }
     })
@@ -100,34 +127,51 @@ function checkRecaptchaStatus() {
     });
 }
 
-function onRecaptchaError() {
-  console.error("Error during reCAPTCHA verification.", error);
-}
-
 async function handleSubmit(event) {
   event.preventDefault();
+
   while (recaptchaLoading) {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
+
+  const formData = collectFormData();
+  if (!validateForm(formData)) return;
+
+  showLoadingSpinner();
+  sendEmail(formData);
+}
+
+function collectFormData() {
   const nameInput = document.getElementById("name");
   const emailInput = document.getElementById("email");
   const messageInput = document.getElementById("message");
 
+  return {
+    name: nameInput.value.trim(),
+    email: emailInput.value.trim(),
+    message: messageInput.value.trim(),
+  };
+}
+
+function validateForm(formData) {
   let isValid = true;
-  isValid =
-    toggleValidation(nameInput, !nameInput.value.trim(), "nameError") &&
-    isValid;
+
   isValid =
     toggleValidation(
-      emailInput,
-      !emailInput.value.trim() ||
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim()),
+      document.getElementById("name"),
+      !formData.name,
+      "nameError"
+    ) && isValid;
+  isValid =
+    toggleValidation(
+      document.getElementById("email"),
+      !formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email),
       "emailError"
     ) && isValid;
   isValid =
     toggleValidation(
-      messageInput,
-      !messageInput.value.trim(),
+      document.getElementById("message"),
+      !formData.message,
       "messageError"
     ) && isValid;
   isValid =
@@ -137,32 +181,71 @@ async function handleSubmit(event) {
       "recaptchaError"
     ) && isValid;
 
-  if (!isValid) return;
+  return isValid;
+}
 
-  const formData = {
-    name: nameInput.value.trim(),
-    email: emailInput.value.trim(),
-    message: messageInput.value.trim(),
-  };
+function toggleValidation(inputField, condition, errorFieldId) {
+  const errorField = document.getElementById(errorFieldId);
+  if (condition) {
+    inputField.classList.add("is-invalid");
+    if (errorField) errorField.style.display = "block";
+    return false;
+  } else {
+    inputField.classList.remove("is-invalid");
+    if (errorField) errorField.style.display = "none";
+    return true;
+  }
+}
 
-  showLoadingSpinner();
+function showLoadingSpinner() {
+  const loadingMessage = document.getElementById("loadingMessage");
+  if (loadingMessage) {
+    loadingMessage.classList.remove("d-none");
+  }
+}
 
+function hideLoadingSpinner() {
+  const loadingMessage = document.getElementById("loadingMessage");
+  if (loadingMessage) {
+    loadingMessage.classList.add("d-none");
+  }
+}
+
+function showSuccessMessage() {
+  const successMessage = document.getElementById("successMessage");
+  if (successMessage) {
+    successMessage.classList.remove("d-none");
+    setTimeout(() => {
+      successMessage.classList.add("d-none");
+    }, 2000);
+  }
+}
+
+async function sendEmail(formData) {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    console.error("CSRF token is missing.");
+    hideLoadingSpinner();
+    return;
+  }
+  formData._csrf = csrfToken;
   fetch(prefix + "/send-email", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "x-csrf-token": csrfToken,
     },
     body: JSON.stringify(formData),
+    credentials: "include",
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error('An error occurred. Please try again later.');
+        throw new Error("An error occurred. Please try again later.");
       }
       return response.json();
     })
     .then(() => {
       hideLoadingSpinner();
-      console.log("Email sent successfully!");
       showSuccessMessage();
     })
     .catch((error) => {
@@ -170,50 +253,14 @@ async function handleSubmit(event) {
       hideLoadingSpinner();
     });
 
+  resetForm();
+}
+
+function resetForm() {
   setTimeout(() => {
-    document.getElementById("myForm").reset();
-    grecaptcha.reset();
+    const form = document.getElementById("myForm");
+    if (form) form.reset();
+    if (window.grecaptcha) grecaptcha.reset();
     recaptchaComplete = false;
-  }, 2000);
-}
-
-function toggleValidation(inputField, condition, errorFieldId) {
-  const errorField = document.getElementById(errorFieldId);
-  if (inputField.classList.contains("g-recaptcha")) {
-    const recaptchaErrorElement = document.getElementById("recaptchaError");
-    if (!recaptchaComplete) {
-      recaptchaErrorElement.classList.remove("d-none");
-      recaptchaErrorElement.style.display = "block";
-      return false;
-    } else {
-      recaptchaErrorElement.classList.add("d-none");
-      return true;
-    }
-  } else if (condition) {
-    inputField.classList.add("is-invalid");
-    errorField.style.display = "block";
-    return false;
-  } else {
-    inputField.classList.remove("is-invalid");
-    errorField.style.display = "none";
-    return true;
-  }
-}
-
-function showLoadingSpinner() {
-  const loadingMessage = document.getElementById("loadingMessage");
-  loadingMessage.classList.remove("d-none");
-}
-
-function hideLoadingSpinner() {
-  const loadingMessage = document.getElementById("loadingMessage");
-  loadingMessage.classList.add("d-none");
-}
-
-function showSuccessMessage() {
-  const successMessage = document.getElementById("successMessage");
-  successMessage.classList.remove("d-none");
-  setTimeout(() => {
-    successMessage.classList.add("d-none");
   }, 2000);
 }

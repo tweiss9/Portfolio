@@ -359,8 +359,18 @@
       <div
         class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 col-sm-9 col-10 mt-4 mx-auto"
       >
-        <form id="myForm">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <form id="myForm" action="/send-email" method="POST">
+          <input
+            type="hidden"
+            name="_csrf"
+            id="csrf-token"
+            value="<%= csrfToken %>"
+          />
+          <input
+            type="hidden"
+            name="g-recaptcha-response"
+            id="g-recaptcha-response"
+          />
           <!-- Name -->
           <div class="row pb-4">
             <label for="name" class="col-md-2 col-sm-3 col-4 col-form-label"

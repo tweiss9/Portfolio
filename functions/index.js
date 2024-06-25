@@ -6,14 +6,21 @@ const path = require("path");
 const functions = require("firebase-functions");
 const cors = require("cors");
 const helmet = require("helmet");
-const csurf = require('csurf');
-const app = express();
+const csurf = require("csurf");
+const crypto = require("crypto");
+const cookieParser = require("cookie-parser");
 const { sendEmail } = require("./sendEmail.js");
 
-app.set("view engine", "ejs");
+const app = express();
 
-const crypto = require("crypto");
+// Middleware
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname)));
+app.use(helmet({}));
 
+// CORS setup
 app.use(
   cors({
     origin: [
@@ -23,14 +30,13 @@ app.use(
       "http://localhost:5000",
       "http://127.0.0.1:5000",
     ],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
+    credentials: true,
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "")));
-app.use(helmet());
-app.use(csurf());
 
+// CSP and nonce setup
 app.use((req, res, next) => {
   const nonce = crypto.randomBytes(16).toString("base64");
 
@@ -42,13 +48,23 @@ app.use((req, res, next) => {
   );
 
   res.locals.nonce = nonce;
-
   next();
 });
 
-app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken();
-  next();
+const csrfProtection = csurf({ cookie: true });
+
+const applyCsrfProtection = (req, res, next) => {
+  if (req.path === "/send-email") {
+    csrfProtection(req, res, next);
+  } else {
+    next();
+  }
+};
+
+app.use("/send-email", applyCsrfProtection);
+
+app.get("/get-csrf-token", csrfProtection, (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
 });
 
 app.get("/get-site-key", (req, res) => {
@@ -96,11 +112,25 @@ app.post("/send-email", async (req, res) => {
       res.json({ success: true });
     })
     .catch((error) => {
-      res.status(500).json({ success: false, error: error });
+      res.status(500).json({ success: false, error: error.message });
     });
 });
 
+app.use((err, req, res, next) => {
+  if (err.code === "EBADCSRFTOKEN" || err.status === 403) {
+    let reason = "Forbidden";
+    if (err.code === "EBADCSRFTOKEN") {
+      reason = "CSRF token validation failed";
+    }
+
+    res.status(403).json({
+      success: false,
+      reason: reason,
+    });
+  } else {
+    next(err);
+  }
+});
+
 const api = functions.https.onRequest(app);
-module.exports = {
-  api,
-};
+module.exports = { api };
