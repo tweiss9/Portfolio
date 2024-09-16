@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
 const path = require("path");
-const functions = require("firebase-functions");
+const { onRequest } = require("firebase-functions/v2/https");
 const cors = require("cors");
 const helmet = require("helmet");
 const csurf = require("csurf");
@@ -21,20 +21,18 @@ app.use(express.static(path.join(__dirname)));
 app.use(helmet({}));
 
 // CORS setup
-app.use(
-  cors({
-    origin: [
-      "https://tylerhweiss.web.app",
-      "https://tylerhweiss.com",
-      "https://www.tylerhweiss.com",
-      "http://localhost:5000",
-      "http://127.0.0.1:5000",
-    ],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: [
+    "https://tylerhweiss.web.app",
+    "https://tylerhweiss.com",
+    "https://www.tylerhweiss.com",
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
+  ],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // CSP and nonce setup
 app.use((req, res, next) => {
@@ -132,5 +130,5 @@ app.use((err, req, res, next) => {
   }
 });
 
-const api = functions.https.onRequest(app);
+const api = onRequest(app);
 module.exports = { api };
