@@ -74,7 +74,7 @@ app.get("/get-site-key", (req, res) => {
   }
 });
 
-app.post("/reCAPTCHA", async (req, res) => {
+app.post("/reCAPTCHA", csrfProtection, async (req, res) => {
   const recaptchaResponse = req.body["g-recaptcha-response"];
   const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
   try {
@@ -102,7 +102,7 @@ app.post("/reCAPTCHA", async (req, res) => {
   }
 });
 
-app.post("/send-email", async (req, res) => {
+app.post("/send-email", csrfProtection, async (req, res) => {
   const { name, email, message } = req.body;
 
   sendEmail(name, email, message)
