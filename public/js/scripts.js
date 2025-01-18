@@ -96,6 +96,15 @@ async function fetchCsrfToken() {
   }
 }
 
+function scrollToSection(sectionId) {
+  const targetSection = document.querySelector(sectionId);
+  const navbarHeight = document.querySelector(".navbar").offsetHeight;
+  const targetPosition =
+    targetSection.getBoundingClientRect().top + window.scrollY - navbarHeight;
+  window.scrollTo({ top: targetPosition, behavior: "smooth" });
+}
+
+
 function checkRecaptchaStatus() {
   recaptchaLoading = true;
   const recaptchaResponse = grecaptcha.getResponse();
