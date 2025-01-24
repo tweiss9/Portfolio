@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setupHomeLink();
   setupSubmitButton();
   fetchSiteKey();
+  displayCurrentYear();
 });
 
 function setupNavigation() {
@@ -272,4 +273,9 @@ function resetForm() {
     if (window.grecaptcha) grecaptcha.reset();
     recaptchaComplete = false;
   }, 2000);
+}
+
+function displayCurrentYear() {
+  const currentYear = new Date().getFullYear();
+  document.querySelector("#currentYear").innerHTML = currentYear;
 }
