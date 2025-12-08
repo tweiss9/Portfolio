@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/css/styles.css" />
     <link rel="icon" type="image/x-icon" href="/images/favicon.png" />
   </head>
-  <body class="container h-100">
+  <body class="mx-5 h-100">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top px-5">
       <a class="navbar-brand nav-link text-white" href="#welcome"
@@ -56,145 +56,234 @@
     </nav>
 
     <!--Welcome Section-->
-    <section id="welcome" class="text-center mt-5 pt-5 vh-100">
-      <h1 class="display-3 my-md-4 py-5">Hello, I'm Tyler Weiss!</h1>
-      <h2>I'm a Computer Scientist based in Philadelphia, PA.</h2>
-      <ul
-        class="list-inline my-5 d-flex justify-content-center align-items-center user-select-none"
-      >
-        <li class="list-inline-item me-sm-5 me-3">
-          <a href="https://github.com/tweiss9" target="_blank" rel="noopener">
-            <img
-              src="images/github.png"
-              title="View my GitHub page"
-              alt="GitHub"
-              class="img-fluid"
-              width="60"
-              height="60"
-            />
-          </a>
-        </li>
-        <li class="list-inline-item me-sm-5 me-3">
-          <a
-            href="https://www.linkedin.com/in/tylerhweiss"
-            target="_blank"
-            rel="noopener"
+    <section id="welcome" class="text-center vh-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-6">
+          <h1 class="display-3 my-5 pb-2 text-nowrap">
+            Hello, I'm Tyler Weiss!
+          </h1>
+          <h2 class="pb-1 text-nowrap">
+            Fullstack Developer, Philadelphia, PA.
+          </h2>
+          <ul
+            class="list-inline mb-5 pb-5 d-flex justify-content-center align-items-center user-select-none"
           >
-            <img
-              src="/images/linkedIn.png"
-              title="View my LinkedIn page"
-              alt="LinkedIn"
-              class="img-fluid"
-              width="60"
-              height="60"
-            />
-          </a>
-        </li>
-        <li class="list-inline-item me-sm-4 pe-sm-2 me-2">
-          <a
-            href="mailto:tylerhweiss@gmail.com?subject=Contact%20Me"
-            target="_blank"
-            rel="noopener"
-          >
-            <img
-              src="/images/gmail.png"
-              title="Send me an email"
-              alt="Gmail"
-              class="img-fluid"
-              width="80"
-              height="60"
-            />
-          </a>
-        </li>
-        <li class="list-inline-item me-sm-2 me-1">
-          <a href="tyler-weiss-resume.pdf" target="_blank" rel="noopener">
-            <img
-              src="/images/resume.png"
-              title="Download my resume"
-              alt="Resume"
-              class="img-fluid"
-              width="60"
-              height="60"
-            />
-          </a>
-        </li>
-      </ul>
-    </section>
-
-    <!-- About Me Section -->
-    <section id="about-me" class="pb-5 mb-5">
-      <h2 class="text-center display-4 mb-4">About Me</h2>
-      <p class="about-text mx-2 px-1">
-        Welcome to my portfolio website! I am a dedicated Computer Science
-        graduate from Temple University. I am equipped with a strong foundation
-        in both frontend and backend development as well as expertise in network
-        security and IT services. My passion for coding is broad as I am
-        constantly staying up-to-date with the latest technologies. Now, I am
-        seeking opportunities to apply my skills and knowledge in a full-time
-        position within the computer science field. Please explore my projects,
-        portfolio and resume and I hope you find the potential for a rewarding
-        professional collaboration.
-      </p>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="pb-5 mb-5">
-      <h2 class="text-center display-4 mb-4">Skills</h2>
-      <div class="justify-content-center row g-4 px-3">
-        <div class="col-md-4">
-          <div
-            class="card bg-transparent border-1 border-secondary rounded-lg h-100"
-          >
-            <h3 class="card-header text-center">Frontend</h3>
-            <ul class="card-body list-unstyled text-center">
-              <li>HTML</li>
-              <li>CSS</li>
-              <li>JavaScript</li>
-              <li>Bootstrap</li>
-              <li>Flutter</li>
-            </ul>
-          </div>
+            <li class="list-inline-item me-sm-5 me-3">
+              <a
+                href="https://github.com/tweiss9"
+                target="_blank"
+                rel="noopener"
+              >
+                <img
+                  src="images/github.png"
+                  title="View my GitHub page"
+                  alt="GitHub"
+                  class="img-fluid"
+                  width="75"
+                  height="75"
+                />
+              </a>
+            </li>
+            <li class="list-inline-item me-sm-5 me-3">
+              <a
+                href="https://www.linkedin.com/in/tylerhweiss"
+                target="_blank"
+                rel="noopener"
+              >
+                <img
+                  src="/images/linkedIn.png"
+                  title="View my LinkedIn page"
+                  alt="LinkedIn"
+                  class="img-fluid"
+                  width="60"
+                  height="60"
+                />
+              </a>
+            </li>
+            <li class="list-inline-item me-sm-4 pe-sm-2 me-2">
+              <a
+                href="mailto:tylerhweiss@gmail.com?subject=Contact%20Me"
+                target="_blank"
+                rel="noopener"
+              >
+                <img
+                  src="/images/gmail.png"
+                  title="Send me an email"
+                  alt="Gmail"
+                  class="img-fluid"
+                  width="80"
+                  height="60"
+                />
+              </a>
+            </li>
+            <li class="list-inline-item me-sm-2 me-1">
+              <a href="tyler-weiss-resume.pdf" target="_blank" rel="noopener">
+                <img
+                  src="/images/resume.png"
+                  title="Download my resume"
+                  alt="Resume"
+                  class="img-fluid"
+                  width="60"
+                  height="60"
+                />
+              </a>
+            </li>
+          </ul>
         </div>
-        <div class="col-md-4">
-          <div
-            class="card bg-transparent border-1 border-secondary rounded-lg h-100"
-          >
-            <h3 class="card-header text-center">Backend</h3>
-            <ul class="card-body list-unstyled text-center">
-              <li>Python</li>
-              <li>Dart</li>
-              <li>Node.js</li>
-              <li>APIs</li>
-              <li>Flask</li>
-              <li>Firebase</li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div
-            class="card bg-transparent border-1 border-secondary rounded-lg h-100"
-          >
-            <h3 class="card-header text-center">Technologies</h3>
-            <ul class="card-body list-unstyled text-center">
-              <li>Git</li>
-              <li>GitHub</li>
-              <li>IT Service</li>
-              <li>Visual Studio Code</li>
-            </ul>
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+          <div class="rgb-glow">
+            <img
+              src="images/cropped-white.jpg"
+              title="Profile Picture"
+              alt="Profile Picture"
+              class="img-fluid rounded-circle border border-black border-1"
+            />
           </div>
         </div>
       </div>
     </section>
 
+    <!-- About Me Section -->
+    <section id="about-me" class="pb-5 mb-5">
+      <h2 class="text-center display-4 pb-5 mb-5">About Me</h2>
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+          <div class="row">
+            <div class="col">
+              <div
+                class="timeline d-flex justify-content-center align-items-center aos-init aos-animate"
+                data-aos="fade-up"
+              >
+                <div class="timeline-step">
+                  <div class="timeline-content">
+                    <div class="inner-circle">
+                      <img
+                        src="images/temple.png"
+                        alt="Temple University"
+                        class="img-fluid"
+                      />
+                    </div>
+                    <h6 class="mt-3 mb-2 text-nowrap">
+                      August 2019 - May 2023
+                    </h6>
+                    <h6 class="mb-3 mb-1 text-nowrap">IT Tech Support</h6>
+                    <h6 class="mb-3 text-nowrap">Temple University</h6>
+                  </div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-content">
+                    <div class="inner-circle">
+                      <img
+                        src="images/penn.png"
+                        alt="Penn Medicine"
+                        class="img-fluid"
+                      />
+                    </div>
+                    <h6 class="mt-3 mb-2 text-nowrap">
+                      October 2023 - July 2024
+                    </h6>
+                    <h6 class="mb-3 mb-1 text-nowrap">Help Desk Analyst</h6>
+                    <h6 class="mb-3 text-nowrap">Penn Medicine</h6>
+                  </div>
+                </div>
+                <div class="timeline-step">
+                  <div class="timeline-content">
+                    <div class="inner-circle">
+                      <img
+                        src="images/aveva.png"
+                        alt="AVEVA"
+                        class="img-fluid"
+                      />
+                    </div>
+                    <h6 class="mt-3 mb-2 text-nowrap">July 2024 - Present</h6>
+                    <h6 class="mb-3 mb-1 text-nowrap">
+                      Product Support Engineer
+                    </h6>
+                    <h6 class="mb-3 text-nowrap">AVEVA</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p
+          class="about-text col-md-6 d-flex justify-content-center align-items-center"
+        >
+          Welcome to my portfolio website! I have my bachelors in Computer
+          Science from Temple University. I am equipped with a strong foundation
+          in both frontend and backend development as well as expertise in
+          network security and IT services.
+        </p>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="pb-5 mb-5">
+      <h2 class="text-center display-4 mb-4">Skills</h2>
+      <div class="container skills">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+          <div class="col text-center">
+            <div class="html">
+              <img src="images/html.png" alt="HTML" class="img-fluid" />
+            </div>
+            <p>HTML</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/css.png" alt="CSS" class="img-fluid" />
+            <p>CSS</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/js.png" alt="JavaScript" class="img-fluid" />
+            <p>JavaScript</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/bootstrap.png" alt="Bootstrap" class="img-fluid" />
+            <p>Bootstrap</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/node.png" alt="Node.js" class="img-fluid" />
+            <p>Node.js</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/python.png" alt="Python" class="img-fluid" />
+            <p>Python</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/flask.png" alt="Flask" class="img-fluid" />
+            <p>Flask</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/firebase.png" alt="Firebase" class="img-fluid" />
+            <p>Firebase</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/dart.png" alt="Dart" class="img-fluid" />
+            <p>Dart</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/flutter.png" alt="Flutter" class="img-fluid" />
+            <p>Flutter</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/git.png" alt="Git" class="img-fluid" />
+            <p>Git</p>
+          </div>
+          <div class="col text-center">
+            <img src="images/github.png" alt="GitHub" class="img-fluid" />
+            <p>GitHub</p>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- Projects Section -->
     <section id="projects" class="pb-5 mb-5">
       <h2 class="text-center display-4 mb-4">Projects</h2>
-      <div class="row row-cols-1 g-4 px-3">
+      <div class="row row-cols-1 row-cols-lg-3 g-4 px-3">
         <div class="col">
           <div
             class="card bg-transparent border-1 border-secondary rounded-lg h-100"
           >
-            <h3 class="card-header text-center">Spotify Playlist Sorter</h3>
+            <h3 class="card-header text-center">Playlist Organizer</h3>
             <div class="card-body d-flex flex-column">
               <p class="card-text">
                 This project showcases a Flask web application that allows users
@@ -350,13 +439,10 @@
         <!-- Add more project cards here -->
       </div>
     </section>
-    
+
     <!-- Contact Me Section -->
     <section id="contact-me" class="pb-5 mb-5">
       <h2 class="text-center display-4 pb-3">Contact Me</h2>
-      <p class="text-center">
-        Feel free to complete this form, and I will follow up with you promptly.
-      </p>
       <div
         class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 col-sm-9 col-10 mt-4 mx-auto"
       >
@@ -373,16 +459,15 @@
             id="g-recaptcha-response"
           />
           <!-- Name -->
-          <div class="row pb-4">
-            <label for="name" class="col-md-2 col-sm-3 col-4 col-form-label"
-              >Name</label
-            >
+          <div
+            class="row d-flex align-items-center justify-content-center pb-4"
+          >
             <div class="col-md-10 col-sm-9 col-8">
               <input
                 type="text"
                 class="bg-transparent border-dark border-opacity-50 form-control"
                 id="name"
-                placeholder="Enter your name"
+                placeholder="Name"
                 autocomplete="name"
                 required
               />
@@ -395,16 +480,15 @@
           </div>
 
           <!-- Email -->
-          <div class="row pb-4">
-            <label for="email" class="col-md-2 col-sm-3 col-4 col-form-label"
-              >Email</label
-            >
+          <div
+            class="row d-flex align-items-center justify-content-center pb-4"
+          >
             <div class="col-md-10 col-sm-9 col-8">
               <input
                 type="email"
                 class="bg-transparent border-dark border-opacity-50 form-control"
                 id="email"
-                placeholder="Enter your email"
+                placeholder="Email"
                 autocomplete="email"
                 required
               />
@@ -417,16 +501,15 @@
           </div>
 
           <!-- Message -->
-          <div class="row pb-4">
-            <label for="message" class="col-md-2 col-sm-3 col-4 col-form-label"
-              >Message</label
-            >
+          <div
+            class="row d-flex align-items-center justify-content-center pb-4"
+          >
             <div class="col-md-10 col-sm-9 col-8">
               <textarea
                 class="bg-transparent border-dark border-opacity-50 form-control"
                 id="message"
                 rows="4"
-                placeholder="Enter your message"
+                placeholder="Message"
                 required
               ></textarea>
             </div>

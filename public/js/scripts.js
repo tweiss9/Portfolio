@@ -89,7 +89,6 @@ async function fetchCsrfToken() {
     const data = await response.json();
     const csrfToken = data.csrfToken;
     document.cookie = `XSRF-TOKEN=${csrfToken}; Path=/; Secure; SameSite=None`;
-
     return csrfToken;
   } catch (error) {
     console.error("Error fetching CSRF token:", error);
@@ -104,7 +103,6 @@ function scrollToSection(sectionId) {
     targetSection.getBoundingClientRect().top + window.scrollY - navbarHeight;
   window.scrollTo({ top: targetPosition, behavior: "smooth" });
 }
-
 
 function checkRecaptchaStatus() {
   recaptchaLoading = true;
