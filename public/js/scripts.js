@@ -1,7 +1,7 @@
 let recaptchaSiteKey;
 let recaptchaLoading = false;
 let recaptchaComplete = false;
-const prefix = "https://us-central1-tylerhweiss.cloudfunctions.net/api";
+const prefix = "/api";
 
 document.addEventListener("DOMContentLoaded", function () {
   setupNavigation();
@@ -232,11 +232,8 @@ function showSuccessMessage() {
 async function sendEmail(formData) {
   const csrfToken = await fetchCsrfToken();
   if (!csrfToken) {
-    console.error("CSRF token is missing.");
-    hideLoadingSpinner();
     return;
   }
-  formData._csrf = csrfToken;
   fetch(prefix + "/send-email", {
     method: "POST",
     headers: {

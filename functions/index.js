@@ -30,6 +30,7 @@ const corsOptions = {
     "http://127.0.0.1:5000",
   ],
   credentials: true,
+  allowedHeaders: ["Content-Type", "x-csrf-token"],
 };
 
 app.use(cors(corsOptions));
@@ -49,23 +50,29 @@ app.use((req, res, next) => {
   next();
 });
 
-const csrfProtection = csurf({ cookie: true });
+const csrfProtection = csurf({
+  cookie: {
+    name: "__session",
+    httpOnly: true,
+    secure: true,
+    sameSite: "Lax",
+  },
+});
 
 const applyCsrfProtection = (req, res, next) => {
   if (req.path === "/send-email") {
-    csrfProtection(req, res, next);
-  } else {
-    next();
-  }
+    return csrfProtection(req, res, next);
+  } 
+  next();
 };
 
 app.use("/send-email", applyCsrfProtection);
 
-app.get("/get-csrf-token", csrfProtection, (req, res) => {
+app.get("/api/get-csrf-token", csrfProtection, (req, res) => {
   res.json({ csrfToken: req.csrfToken() });
 });
 
-app.get("/get-site-key", (req, res) => {
+app.get("/api/get-site-key", (req, res) => {
   try {
     const recaptchaSiteKey = process.env.RECAPTCHA_SITE_KEY;
     res.json({ recaptchaSiteKey });
@@ -74,7 +81,7 @@ app.get("/get-site-key", (req, res) => {
   }
 });
 
-app.post("/reCAPTCHA", csrfProtection, async (req, res) => {
+app.post("/api/reCAPTCHA", async (req, res) => {
   const recaptchaResponse = req.body["g-recaptcha-response"];
   const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
   try {
@@ -102,7 +109,7 @@ app.post("/reCAPTCHA", csrfProtection, async (req, res) => {
   }
 });
 
-app.post("/send-email", csrfProtection, async (req, res) => {
+app.post("/api/send-email", async (req, res) => {
   const { name, email, message } = req.body;
 
   sendEmail(name, email, message)
@@ -112,22 +119,6 @@ app.post("/send-email", csrfProtection, async (req, res) => {
     .catch((error) => {
       res.status(500).json({ success: false, error: error.message });
     });
-});
-
-app.use((err, req, res, next) => {
-  if (err.code === "EBADCSRFTOKEN" || err.status === 403) {
-    let reason = "Forbidden";
-    if (err.code === "EBADCSRFTOKEN") {
-      reason = "CSRF token validation failed";
-    }
-
-    res.status(403).json({
-      success: false,
-      reason: reason,
-    });
-  } else {
-    next(err);
-  }
 });
 
 const api = onRequest(app);
